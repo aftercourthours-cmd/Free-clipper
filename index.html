@@ -1,11 +1,107 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My First Website</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Video Clipper</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #101827;
+  color: white;
+  text-align: center;
+}
+header {
+  padding: 25px;
+  background: #18243a;
+}
+h1 { color: #42e8a0; }
+main {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #1b2940;
+  border-radius: 15px;
+}
+input, button {
+  padding: 12px;
+  margin: 10px;
+  border-radius: 8px;
+}
+button {
+  background: #42e8a0;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+video {
+  width: 100%;
+  margin-top: 20px;
+  border-radius: 10px;
+}
+input[type="number"] { width: 90px; }
+</style>
 </head>
 <body>
-    <h1>Welcome to My Website!</h1>
-    <p>This is my first webpage created using GitHub.</p>
+<header>
+<h1>✂️ Free Video Clipper</h1>
+<p>Upload, trim and download your videos for free!</p>
+</header>
+
+<main>
+<h2>Upload Your Video</h2>
+<input type="file" id="file" accept="video/*">
+
+<video id="video" controls hidden></video>
+
+<div>
+<p>Start time (seconds)</p>
+<input type="number" id="start" value="0" min="0" step="0.1">
+
+<p>End time (seconds)</p>
+<input type="number" id="end" value="10" min="0" step="0.1">
+</div>
+
+<button id="preview">Preview Clip</button>
+<button id="download">Download Clip</button>
+
+<p id="status">Choose a video to get started.</p>
+</main>
+
+<script>
+const file = document.getElementById("file");
+const video = document.getElementById("video");
+const start = document.getElementById("start");
+const end = document.getElementById("end");
+const status = document.getElementById("status");
+
+let videoURL = null;
+
+file.onchange = () => {
+  if (!file.files[0]) return;
+  if (videoURL) URL.revokeObjectURL(videoURL);
+  videoURL = URL.createObjectURL(file.files[0]);
+  video.src = videoURL;
+  video.hidden = false;
+  video.onloadedmetadata = () => {
+    start.value = 0;
+    end.value = video.duration.toFixed(1);
+    end.max = video.duration;
+    status.textContent = "Video loaded successfully!";
+  };
+};
+
+document.getElementById("preview").onclick = () => {
+  if (!videoURL) return alert("Upload a video first!");
+  video.currentTime = Number(start.value);
+  video.play();
+};
+
+document.getElementById("download").onclick = () => {
+  alert("Next step: We'll add actual video trimming and downloading with FFmpeg.");
+};
+</script>
 </body>
 </html>
